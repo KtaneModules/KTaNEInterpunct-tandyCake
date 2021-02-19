@@ -115,9 +115,9 @@ public class InterpunctScript : MonoBehaviour
     }
     void DoLogging()
     {
-        Debug.LogFormat("[. #{0}] Stage {1}: The symbol on the display is {2}.", moduleId, stage, displaySymbol);
-        Debug.LogFormat("[. #{0}] The symbols on the buttons are {1} {2} {3}", moduleId, buttonSymbols[0], buttonSymbols[1], buttonSymbols[2]);
-        Debug.LogFormat("[. #{0}] The correct button to press is {1}", moduleId, answerSymbol);
+        Debug.LogFormat("[Interpunct #{0}] Stage {1}: The symbol on the display is {2}.", moduleId, stage, displaySymbol);
+        Debug.LogFormat("[Interpunct #{0}] The symbols on the buttons are {1} {2} {3}", moduleId, buttonSymbols[0], buttonSymbols[1], buttonSymbols[2]);
+        Debug.LogFormat("[Interpunct #{0}] The correct button to press is {1}", moduleId, answerSymbol);
     }
 
     void LightOn()
@@ -156,16 +156,16 @@ public class InterpunctScript : MonoBehaviour
         positionPressed = Array.IndexOf(buttons, button);
         symbolPressed = buttonSymbols[positionPressed];
 
-        Debug.LogFormat("[. #{0}] You pressed button {1}, which had the symbol of {2}", moduleId, positionPressed + 1, symbolPressed);
+        Debug.LogFormat("[Interpunct #{0}] You pressed button {1}, which had the symbol of {2}", moduleId, positionPressed + 1, symbolPressed);
 
         if (symbolPressed == answerSymbol)
         {
-            Debug.LogFormat("[. #{0}] That was correct.\n", moduleId);
+            Debug.LogFormat("[Interpunct #{0}] That was correct.\n", moduleId);
             StartCoroutine(StageAnim());
         }
         else
         {
-            Debug.LogFormat("[. #{0}] That was incorrect. Strike.\n", moduleId);
+            Debug.LogFormat("[Interpunct #{0}] That was incorrect. Strike.\n", moduleId);
             GetComponent<KMBombModule>().HandleStrike();
             displayText.text = string.Empty;
             Start();
@@ -190,7 +190,7 @@ public class InterpunctScript : MonoBehaviour
         isAnimating = false;
         if (stage == 3)
         {
-            Debug.LogFormat("[. #{0}] Module solved.", moduleId);
+            Debug.LogFormat("[Interpunct #{0}] Module solved.", moduleId);
             moduleSolved = true;
             GetComponent<KMAudio>().PlaySoundAtTransform("solveSoundSFX", transform);
             GetComponent<KMBombModule>().HandlePass();
