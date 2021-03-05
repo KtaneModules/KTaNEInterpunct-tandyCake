@@ -103,15 +103,15 @@ public class InterpunctScript : MonoBehaviour
     }
     void GetButtons()
     {
-        symbolsList.Remove(answerSymbol);
-        foreach (string symbol in possibleAnswers)
+        symbolsList.Remove(answerSymbol); // this line also is at line 102. Why does it clear it twice? because fuck you.
+        foreach (string symbol in possibleAnswers) //Removes any symbols that could possible be correct from the list of symbols.
         {
             symbolsList.Remove(symbol);
         }
         symbolsList.Shuffle();
         buttonSymbols.Add(symbolsList[0]);
-        buttonSymbols.Add(symbolsList[1]);
-        buttonSymbols.Shuffle();
+        buttonSymbols.Add(symbolsList[1]);   //Takes 2 random symbols and puts them on random buttons.
+        buttonSymbols.Shuffle(); 
     }
     void DoLogging()
     {
@@ -132,17 +132,11 @@ public class InterpunctScript : MonoBehaviour
         pointLights[stage - 1].SetActive(false);
         ledStates[stage - 1] = false;
     }
-
     void ToggleLight()
     {
-        if (ledStates[stage - 1] == true)
-        {
-            LightOff();
-        }
-        else
-        {
-            LightOn();
-        }
+        if (ledStates[stage - 1]) //If the light is on, turn it off. If the light is off, turn it on.
+             { LightOff(); } 
+        else { LightOn(); }
     }
 
     void ButtonPress(KMSelectable button)
@@ -181,12 +175,12 @@ public class InterpunctScript : MonoBehaviour
             buttonTexts[i].text = string.Empty;
         }
 
-        for (int i = 0; i < UnityEngine.Random.Range(8, 12); i++)
+        for (int i = 0; i < UnityEngine.Random.Range(8, 12); i++) //Toggles the light a number of times between 8 and 11.
         {
             ToggleLight();
-            yield return new WaitForSeconds(UnityEngine.Random.Range(0.05f, 0.40f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(0.05f, 0.40f)); //Takes a random float to determine how long to keep the light color for each flicker.
         }
-        LightOn();
+        LightOn(); //Finally makes sure that the light ends up on.
         isAnimating = false;
         if (stage == 3)
         {
@@ -214,19 +208,20 @@ public class InterpunctScript : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use [!{0} press 1] to press the leftmost button. ";
+    private readonly string TwitchHelpMessage = @"Use [!{0} press 1] to press the leftmost button. "; 
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
     {
-        string[] parameters = Command.Split(' ');
+        //This tp support actually doesn't require that your message start with press. !2 3 works too.
+        string[] parameters = Command.Split(' '); 
         if (parameters.Length > 2)
         {
             yield return null;
         }
         else
         {
-            if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) 
             {
                 buttonToPress = parameters[1];
             }
