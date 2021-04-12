@@ -42,17 +42,11 @@ public class InterpunctScript : MonoBehaviour
     bool isAnimating;
     bool[] ledStates = new bool[3];
 
-    string buttonToPress;
-
     void Awake()
     {
         moduleId = moduleIdCounter++;
-
         foreach (KMSelectable button in buttons)
-        {
             button.OnInteract += delegate () { ButtonPress(button); return false; };
-        }
-
     }
     void Start()
     {
@@ -81,21 +75,13 @@ public class InterpunctScript : MonoBehaviour
 
 
         if (displayIndex > 4) // if not on top edge, add symbol above
-        {
             possibleAnswers.Add(symbols[displayIndex - 5]);
-        }
         if (displayIndex < 20) //if not on bottom edge, add symbol below
-        {
             possibleAnswers.Add(symbols[displayIndex + 5]);
-        }
         if (!(displayIndex % 5 == 0)) //if not on left edge, add symbol to left
-        {
             possibleAnswers.Add(symbols[displayIndex - 1]);
-        }
         if (!(displayIndex % 5 == 4)) //if not on right edge, add symbol to right
-        {
             possibleAnswers.Add(symbols[displayIndex + 1]);
-        }
 
         answerSymbol = possibleAnswers[UnityEngine.Random.Range(0, possibleAnswers.Count)];
         buttonSymbols.Add(answerSymbol);
@@ -134,19 +120,17 @@ public class InterpunctScript : MonoBehaviour
     }
     void ToggleLight()
     {
-        if (ledStates[stage - 1]) //If the light is on, turn it off. If the light is off, turn it on.
-             { LightOff(); } 
-        else { LightOn(); }
+        if (ledStates[stage - 1]) LightOff(); 
+        else  LightOn();
+        //If the light is on, turn it off. If the light is off, turn it on.
     }
 
     void ButtonPress(KMSelectable button)
     {
-        if (moduleSolved || isAnimating)
-        {
-            return;
-        }
         button.AddInteractionPunch(1.5f);
         GetComponent<KMAudio>().PlaySoundAtTransform("bulbPressSFX", transform);
+        if (moduleSolved || isAnimating)
+            return;
         positionPressed = Array.IndexOf(buttons, button);
         symbolPressed = buttonSymbols[positionPressed];
 
@@ -171,9 +155,7 @@ public class InterpunctScript : MonoBehaviour
         isAnimating = true;
         displayText.text = string.Empty;
         for (int i = 0; i < 3; i++)
-        {
             buttonTexts[i].text = string.Empty;
-        }
 
         for (int i = 0; i < UnityEngine.Random.Range(8, 12); i++) //Toggles the light a number of times between 8 and 11.
         {
@@ -199,9 +181,7 @@ public class InterpunctScript : MonoBehaviour
     {
         isAnimating = true;
         for (int i = 0; i < 3; i++)
-        {
             buttonTexts[i].text = buttonSymbols[i];
-        }
         yield return new WaitForSeconds(0.5f);
         displayText.text = displaySymbol;
         isAnimating = false;
@@ -211,34 +191,20 @@ public class InterpunctScript : MonoBehaviour
     private readonly string TwitchHelpMessage = @"Use [!{0} press 1] to press the leftmost button. "; 
 #pragma warning restore 414
 
-    IEnumerator ProcessTwitchCommand(string Command)
+    IEnumerator ProcessTwitchCommand(string input)
     {
-        //This tp support actually doesn't require that your message start with press. !2 3 works too.
-        string[] parameters = Command.Split(' '); 
-        if (parameters.Length > 2)
+        string Command = input.Trim().ToUpperInvariant();
+        List<string> parameters = Command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        if (parameters.First() == "PRESS" || parameters.First() == "SUBMIT")
+           parameters.Remove(parameters.First());
+        if (parameters.Count != 1)
+            yield return "sendtochaterror Too many parameters!";
+        if (new string[] { "1", "2", "3" }.Contains(parameters.First()))
         {
             yield return null;
+            buttons[int.Parse(parameters.First()) - 1].OnInteract();
+            yield return new WaitForSeconds(0.1f);
         }
-        else
-        {
-            if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) 
-            {
-                buttonToPress = parameters[1];
-            }
-            else
-            {
-                buttonToPress = parameters[0];
-            }
-            if (!"123".Contains(buttonToPress))
-            {
-                yield return null;
-            }
-            else
-            {
-                buttons[int.Parse(buttonToPress) - 1].OnInteract();
-                yield return "solve";
-            }
-        }   
     }
 
     IEnumerator TwitchHandleForcedSolve()
@@ -246,9 +212,7 @@ public class InterpunctScript : MonoBehaviour
         while (!moduleSolved)
         {
             while (isAnimating)
-            {
                 yield return true;
-            }
             for (int i = 0; i < 3; i++)
             {
                 if (buttonSymbols[i] == answerSymbol)
