@@ -106,31 +106,38 @@ public class InterpunctScript : MonoBehaviour
         Debug.LogFormat("[Interpunct #{0}] The correct button to press is {1}", moduleId, answerSymbol);
     }
 
-    void LightOn()
+    void LightOn(int number)
     {
-        ledBulbs[stage - 1].GetComponent<MeshRenderer>().material = ledColors[1];
-        pointLights[stage - 1].SetActive(true);
-        ledStates[stage - 1] = true;
+        ledBulbs[number].GetComponent<MeshRenderer>().material = ledColors[1];
+        pointLights[number].SetActive(true);
+        ledStates[number] = true;
     }
-    void LightOff()
+    void LightOff(int number)
     {
-        ledBulbs[stage - 1].GetComponent<MeshRenderer>().material = ledColors[0];
-        pointLights[stage - 1].SetActive(false);
-        ledStates[stage - 1] = false;
+        ledBulbs[number].GetComponent<MeshRenderer>().material = ledColors[0];
+        pointLights[number].SetActive(false);
+        ledStates[number] = false;
     }
-    void ToggleLight()
+    void ToggleLight(int number)
     {
-        if (ledStates[stage - 1]) LightOff(); 
-        else  LightOn();
+        if (ledStates[number]) LightOff(number); 
+        else  LightOn(number);
         //If the light is on, turn it off. If the light is off, turn it on.
     }
 
     void ButtonPress(KMSelectable button)
     {
+        if (isAnimating)
+            return;
         button.AddInteractionPunch(1.5f);
         GetComponent<KMAudio>().PlaySoundAtTransform("bulbPressSFX", transform);
-        if (moduleSolved || isAnimating)
+        if (moduleSolved)
+        {
+            ToggleLight(Array.IndexOf(buttons, button));
             return;
+        }
+
+
         positionPressed = Array.IndexOf(buttons, button);
         symbolPressed = buttonSymbols[positionPressed];
 
@@ -159,10 +166,10 @@ public class InterpunctScript : MonoBehaviour
 
         for (int i = 0; i < UnityEngine.Random.Range(8, 12); i++) //Toggles the light a number of times between 8 and 11.
         {
-            ToggleLight();
+            ToggleLight(stage - 1);
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.05f, 0.40f)); //Takes a random float to determine how long to keep the light color for each flicker.
         }
-        LightOn(); //Finally makes sure that the light ends up on.
+        LightOn(stage - 1); //Finally makes sure that the light ends up on.
         isAnimating = false;
         if (stage == 3)
         {
@@ -204,6 +211,8 @@ public class InterpunctScript : MonoBehaviour
             yield return null;
             buttons[int.Parse(parameters.First()) - 1].OnInteract();
             yield return new WaitForSeconds(0.1f);
+            if (buttonSymbols[int.Parse(parameters.First()) - 1] == answerSymbol && stage == 2)
+                yield return "solve";
         }
     }
 
@@ -215,6 +224,7 @@ public class InterpunctScript : MonoBehaviour
                 yield return true;
             for (int i = 0; i < 3; i++)
             {
+                if (moduleSolved) break;
                 if (buttonSymbols[i] == answerSymbol)
                 {
                     yield return new WaitForSeconds(0.1f);
