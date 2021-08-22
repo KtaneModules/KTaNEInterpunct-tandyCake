@@ -197,6 +197,7 @@ GameObject:
   - component: {fileID: 23950762864662036}
   - component: {fileID: 33092675282523796}
   - component: {fileID: 114060584765888968}
+  - component: {fileID: 135726020652219770}
   m_Layer: 0
   m_Name: rounded light0
   m_TagString: Untagged
@@ -215,6 +216,7 @@ GameObject:
   - component: {fileID: 23984132402946416}
   - component: {fileID: 33775120166128664}
   - component: {fileID: 114071413279982228}
+  - component: {fileID: 135198304597884530}
   m_Layer: 0
   m_Name: rounded light1
   m_TagString: Untagged
@@ -267,6 +269,7 @@ GameObject:
   - component: {fileID: 23078304881105004}
   - component: {fileID: 33122789804175758}
   - component: {fileID: 114544023032375556}
+  - component: {fileID: 135359558119347332}
   m_Layer: 0
   m_Name: rounded light2
   m_TagString: Untagged
@@ -1831,7 +1834,8 @@ MonoBehaviour:
   IsPassThrough: 0
   ChildRowLength: 0
   Highlight: {fileID: 114348352695901178}
-  SelectableColliders: []
+  SelectableColliders:
+  - {fileID: 135198304597884530}
   DefaultSelectableIndex: 0
   AllowSelectionWrapX: 0
   AllowSelectionWrapY: 0
@@ -1927,7 +1931,8 @@ MonoBehaviour:
   IsPassThrough: 0
   ChildRowLength: 0
   Highlight: {fileID: 114257457424449604}
-  SelectableColliders: []
+  SelectableColliders:
+  - {fileID: 135726020652219770}
   DefaultSelectableIndex: 0
   AllowSelectionWrapX: 0
   AllowSelectionWrapY: 0
@@ -2000,7 +2005,8 @@ MonoBehaviour:
   IsPassThrough: 0
   ChildRowLength: 0
   Highlight: {fileID: 114683278549090300}
-  SelectableColliders: []
+  SelectableColliders:
+  - {fileID: 135359558119347332}
   DefaultSelectableIndex: 0
   AllowSelectionWrapX: 0
   AllowSelectionWrapY: 0
@@ -2105,3 +2111,39 @@ MonoBehaviour:
   ModuleType: interpunct
   ModuleDisplayName: Interpunct
   RequiresTimerVisibility: 0
+--- !u!135 &135198304597884530
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1330658830216358}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5.1
+  m_Center: {x: 35, y: -5.0000005, z: 0.5}
+--- !u!135 &135359558119347332
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1353774817688944}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5.1
+  m_Center: {x: 35, y: -5.0000005, z: 0.5}
+--- !u!135 &135726020652219770
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1307139507834268}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5.1
+  m_Center: {x: 35, y: -5.0000005, z: 0.5}
