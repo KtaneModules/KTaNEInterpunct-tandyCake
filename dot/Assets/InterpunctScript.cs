@@ -21,7 +21,7 @@ public class InterpunctScript : MonoBehaviour
 
     static int moduleIdCounter = 1;
     private int moduleId;
-    private bool moduleSolved;
+    private bool moduleSolved, solving;
     int stage = 1;
     int displayIndex;
     int positionPressed;
@@ -160,6 +160,7 @@ public class InterpunctScript : MonoBehaviour
     IEnumerator StageAnim()
     {
         isAnimating = true;
+        solving = stage == 3;
         displayText.text = string.Empty;
         for (int i = 0; i < 3; i++)
             buttonTexts[i].text = string.Empty;
@@ -195,25 +196,19 @@ public class InterpunctScript : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use [!{0} press 1] to press the leftmost button. "; 
+    private readonly string TwitchHelpMessage = @"Use [!{0} press 1/2/3] to press that button from left to right. "; 
 #pragma warning restore 414
 
-    IEnumerator ProcessTwitchCommand(string input)
+    IEnumerator ProcessTwitchCommand(string command)
     {
-        string Command = input.Trim().ToUpperInvariant();
-        List<string> parameters = Command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        if (parameters.First() == "PRESS" || parameters.First() == "SUBMIT")
-           parameters.Remove(parameters.First());
-        if (parameters.Count != 1)
-            yield return "sendtochaterror Too many parameters!";
-        if (new string[] { "1", "2", "3" }.Contains(parameters.First()))
+        Match m = Regex.Match(command.Trim().ToUpperInvariant(), @"^(?:PRESS\s+|SUBMIT\s+)?([1-3])$");
+        if (m.Success)
         {
             yield return null;
-            buttons[int.Parse(parameters.First()) - 1].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            if (buttonSymbols[int.Parse(parameters.First()) - 1] == answerSymbol && stage == 2)
-                yield return "solve";
+            buttons[m.Groups[1].Value[0] - '1'].OnInteract();
         }
+        if (solving)
+            yield return "solve";
     }
 
     IEnumerator TwitchHandleForcedSolve()
@@ -222,16 +217,7 @@ public class InterpunctScript : MonoBehaviour
         {
             while (isAnimating)
                 yield return true;
-            for (int i = 0; i < 3; i++)
-            {
-                if (moduleSolved) break;
-                if (buttonSymbols[i] == answerSymbol)
-                {
-                    yield return new WaitForSeconds(0.1f);
-                    buttons[i].OnInteract();
-                    break;
-                }
-            }
+            buttons[Array.IndexOf(buttonSymbols.ToArray(), answerSymbol)].OnInteract();
         }
     }
 }
