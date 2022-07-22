@@ -504,6 +504,7 @@ GameObject:
   - component: {fileID: 114380620026164580}
   - component: {fileID: 114458188398020488}
   - component: {fileID: 114891031096994964}
+  - component: {fileID: 114554359909339880}
   - component: {fileID: 114604604252583498}
   - component: {fileID: 114778523662496332}
   m_Layer: 0
@@ -1951,6 +1952,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Legacy Shaders/Transparent/Diffuse
+--- !u!114 &114554359909339880
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1986053206086942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114604604252583498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2062,8 +2075,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216faa3a3c0a32841aebb761b6ee56c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bomb: {fileID: 0}
-  audio: {fileID: 0}
+  bomb: {fileID: 114458188398020488}
+  audio: {fileID: 114380620026164580}
+  Ruleseed: {fileID: 114554359909339880}
   buttons:
   - {fileID: 114536141831852128}
   - {fileID: 114335267818012706}

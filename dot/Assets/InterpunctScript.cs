@@ -11,6 +11,7 @@ public class InterpunctScript : MonoBehaviour
 
     public KMBombInfo bomb;
     public KMAudio audio;
+    public KMRuleSeedable Ruleseed;
     public KMSelectable[] buttons;
     public TextMesh displayText;
     public TextMesh[] buttonTexts;
@@ -29,14 +30,17 @@ public class InterpunctScript : MonoBehaviour
     string answerSymbol;
     string symbolPressed;
     List<string> buttonSymbols = new List<string>();
-    static string[] symbols = new string[]
-    {
-    @"(",   @",",   @">",   @"/",   @"}",
-    @"]",   @"_",   @"-",   "\"",   @"|",
-    @"»",   @":",   @".",   @"{",   @"<",
-    @"”",   @"«",   @"`",   @"[",   @"?",
-    @")",   @"!",   @"\",   @"'",   @";",
-    };
+    static readonly string[] allSymbols = {
+        //Default table
+        "(",   ",",   ">",   "/",   "}",
+        "]",   "_",   "-",   "\"",  "|",
+        "»",   ":",   ".",   "{",   "<",
+        "”",   "«",   "`",   "[",   "?",
+        ")",   "!",   "\\",   "'",  ";",
+        //Ruleseed symbols
+        "&", "#", "^", "+", "~", "¡", "‽", "*", "°"
+        };
+    string[] symbols;
     List<string> symbolsList = new List<string>();
     List<string> possibleAnswers = new List<string>();
     bool isAnimating;
@@ -50,7 +54,11 @@ public class InterpunctScript : MonoBehaviour
     }
     void Start()
     {
-        
+        SetUpTable();
+        GenerateStage();
+    }
+    void GenerateStage()
+    {
         symbolsList = symbols.ToList();
         ClearInfo();
         GetDisplay();
@@ -58,6 +66,15 @@ public class InterpunctScript : MonoBehaviour
         GetButtons();
         DoLogging();
         StartCoroutine(DisplayInfo());
+    }
+
+    void SetUpTable()
+    {
+        var rng = Ruleseed.GetRNG();
+        if (rng.Seed != 1)
+            rng.ShuffleFisherYates(allSymbols);
+        symbols = allSymbols.Take(25).ToArray();
+        Debug.Log(symbols.Join());
     }
 
     void ClearInfo()
@@ -72,8 +89,6 @@ public class InterpunctScript : MonoBehaviour
     }
     void GetAnswer()
     {
-
-
         if (displayIndex > 4) // if not on top edge, add symbol above
             possibleAnswers.Add(symbols[displayIndex - 5]);
         if (displayIndex < 20) //if not on bottom edge, add symbol below
@@ -95,6 +110,7 @@ public class InterpunctScript : MonoBehaviour
             symbolsList.Remove(symbol);
         }
         symbolsList.Shuffle();
+        symbolsList.Remove(answerSymbol);
         buttonSymbols.Add(symbolsList[0]);
         buttonSymbols.Add(symbolsList[1]);   //Takes 2 random symbols and puts them on random buttons.
         buttonSymbols.Shuffle(); 
@@ -153,7 +169,7 @@ public class InterpunctScript : MonoBehaviour
             Debug.LogFormat("[Interpunct #{0}] That was incorrect. Strike.\n", moduleId);
             GetComponent<KMBombModule>().HandleStrike();
             displayText.text = string.Empty;
-            Start();
+            GenerateStage();
         }
     }
 
@@ -182,7 +198,7 @@ public class InterpunctScript : MonoBehaviour
         else
         { 
             stage++;
-            Start();
+            GenerateStage();
         }
     }
     IEnumerator DisplayInfo()
