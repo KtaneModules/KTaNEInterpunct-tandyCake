@@ -26,6 +26,6 @@ MonoBehaviour:
     moduleID: interpunct
 
     Manual can be found on ktane.timwi.de'
-  version: 1.4.0
+  version: 1.4.1
   outputFolder: interpunctbuild
   previewImage: {fileID: 2800000, guid: 1706d75205eaf744c9b4ce79cf43a55c, type: 3}

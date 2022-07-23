@@ -30,7 +30,7 @@ public class InterpunctScript : MonoBehaviour
     string answerSymbol;
     string symbolPressed;
     List<string> buttonSymbols = new List<string>();
-    static readonly string[] allSymbols = {
+    readonly string[] allSymbols = {
         //Default table
         "(",   ",",   ">",   "/",   "}",
         "]",   "_",   "-",   "\"",  "|",
